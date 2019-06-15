@@ -1,0 +1,16 @@
+{
+  "name": "kettle-ssr",
+  "version": "1.0.0",
+  "description": "Server for Ardunio Kettle",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^18.3.1",
+    "@hapi/vision": "^5.5.2",
+    "handlebars": "^4.1.2"
+  }
+}

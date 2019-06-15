@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{this.title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <section class="title">
+        <h1 class="title_text">Ardunio Kettle</h1>
+    </section>
+    {{#if this.currentStatus}}
+    <p class="text">There is currently a request to boil the kettle</p>
+    {{else}}
+    <p class="text">There is currently no request to boil the kettle</p>
+    {{/if}}
+
+    <section class="action">
+        <button type="button" class="action_button" onclick="turnOnKettle()">
+            Boil Kettle
+        </button>
+    </section>
+</body>
+
+
+<script>
+    const url = 'http://74e93032.ngrok.io';
+
+    async function turnOnKettle() {
+        const button = document.querySelector('.action_button');
+        const text = document.querySelector('.text');
+        text.innerHTML = 'Sending request to boil kettle. Kettle should start to boil within 30 seconds...';
+        button.disabled = true;
+        try {
+            await window.fetch(
+                `${url}/start`,
+                {
+                    method: 'POST',
+                },
+            );
+            console.log('Request done');
+        } catch (er) {
+            console.log('err' + er);
+        }
+        await timeout(30000);
+        text.innerHTML = 'There is currently no request to boil the kettle';
+        button.disabled = false;
+    }
+
+    function timeout(delay) {
+        return new Promise(function (resolve) {
+            setTimeout(resolve, delay);
+        });
+    }
+
+    setInterval(async function () {
+        const button = document.querySelector('.action_button');
+        const text = document.querySelector('.text');
+        const status = await window.fetch(`${url}/status`);
+        if (status === 'true') {
+            const text = document.querySelector('.text');
+            text.innerHTML = 'Sending request to boil kettle. Kettle should start to boil within 30 seconds...';
+        } else {
+            text.innerHTML = 'There is currently no request to boil the kettle';
+            button.disabled = false;
+        }
+    }, 60 * 1000); 
+</script>
+
+<style>
+    * {
+        font-family: Arial, Helvetica, sans-serif;
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    html {
+        background-color: #d7dedc;
+        width: 100%;
+        height: 100%;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    pre,
+    blockquote,
+    form,
+    ul,
+    ol,
+    dl {
+        margin: 20px 0;
+    }
+
+    li,
+    dd,
+    blockquote {
+        margin-left: 40px;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    .title {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        background-color: #7293a0;
+        color: #e5c1ec;
+        text-transform: lowercase;
+        font-size: 18px;
+    }
+
+    .title_text {
+        margin: 0;
+        text-transform: lowercase;
+        text-align: center;
+        letter-spacing: 2.5px;
+    }
+
+    .action {
+        display: flex;
+        justify-content: center;
+    }
+
+    button {
+        padding: 20px;
+        border-radius: 5px;
+        background-color: #596475;
+        color: white;
+        margin-top: 50px;
+        font-size: 16px;
+    }
+
+    button:disabled {
+        background-color: #c0c4c9;
+    }
+
+    p {
+        text-align: center;
+    }
+</style>
+
+</html>
